@@ -1,3 +1,4 @@
+"""models using sqlalchemy"""
 from typing import List
 from typing import Optional
 from sqlalchemy import ForeignKey
@@ -6,36 +7,45 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
-from sqlalchemy import DateTime,column
+from sqlalchemy import DateTime, column
+
 
 class Base(DeclarativeBase):
+    """Base class from declarativeBase to be used as model class's parent"""
     pass
 
+
 class User(Base):
+    """user model class"""
     __tablename__ = "user_account"
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(30))
     password: Mapped[str] = mapped_column(String(200))
     email: Mapped[str] = mapped_column(String(200))
     fullname: Mapped[Optional[str]]
+
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, username={self.username!r}, password={self.password!r})"
 
+
 class Post(Base):
+    """post model class"""
     __tablename__ = "post"
     id: Mapped[int] = mapped_column(primary_key=True)
-    body:Mapped[str] = mapped_column(String(2000))
+    body: Mapped[str] = mapped_column(String(2000))
     user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
     user: Mapped["User"] = relationship(back_populates="addresses")
+
     def __repr__(self) -> str:
         return f"post(id={self.id!r}, body={self.body!r})"
-    
-class Session(Base):
-    __tablename__="session"
-    session_key:Mapped[str]=mapped_column(primary_key=True)
-    session_value:Mapped[str]=mapped_column(String(1000))
-    expire_date = column(DateTime)
 
+
+class Session(Base):
+    """session class model"""
+    __tablename__ = "session"
+    session_key: Mapped[str] = mapped_column(primary_key=True)
+    session_value: Mapped[str] = mapped_column(String(1000))
+    expire_date = column(DateTime)
 
 
 # my(Amir) models just for reference:
