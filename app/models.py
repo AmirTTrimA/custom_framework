@@ -35,3 +35,45 @@ class Session(Base):
     session_key:Mapped[str]=mapped_column(primary_key=True)
     session_value:Mapped[str]=mapped_column(String(1000))
     expire_date = column(DateTime)
+
+
+
+# my(Amir) models just for reference:
+
+# from datetime import datetime, timedelta
+# import uuid
+
+# from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, create_engine
+# from sqlalchemy.orm import relationship, declarative_base
+
+# Base = declarative_base()
+
+# class User(Base):
+#     """User Model Class"""
+#     __tablename__ = "users"
+#     id = Column(Integer, primary_key=True)
+#     username = Column(String)
+#     password = Column(String)
+#     last_login = Column(DateTime)
+
+# class Post(Base):
+#     """Post Model Class"""
+#     __tablename__ = "posts"
+#     id = Column(Integer, primary_key=True)
+#     author = Column(Integer, ForeignKey('users.id'), nullable=False)
+#     title = Column(String)
+#     body = Column(String)
+#     created_at = Column(DateTime)
+
+# class Session(Base):
+#     """Session Model Class"""
+#     __tablename__ = "sessions"
+#     id = Column(Integer, primary_key=True)
+#     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+#     token = Column(String, unique=True, default=lambda: str(uuid.uuid4()))
+#     created_at = Column(DateTime, default=datetime.utcnow)
+#     expires_at = Column(DateTime, default=lambda: datetime.utcnow() + timedelta(days=1))
+
+# engine = create_engine('sqlite:///proj/example.db')
+# Base.metadata.create_all(engine)
+# print('db created!')
