@@ -1,8 +1,10 @@
-def resolve(path):
-    from app.urls import urlpatterns
+from app.views import register,index,about,posts_view
 
-    for pattern in urlpatterns:
-        if pattern['path'] == path:
-            return pattern['view'], pattern.get('kwargs', {})
 
-    return None, None
+urlpatterns = [ 
+    {"path":"/register","views":register},
+    {"path":"/","views":index},
+    {"path":"/about","views":about},
+    {"path":"/posts","views":posts_view},
+
+]
