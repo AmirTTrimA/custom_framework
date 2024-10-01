@@ -1,4 +1,4 @@
-from framework.http import run_server
+from core.http import run_server
 from app.urls import urlpatterns
 
 if __name__ == "__main__":
