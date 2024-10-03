@@ -1,4 +1,4 @@
-from core.http import render_template
+from core.http import render_template, render_css
 
 from sqlalchemy.orm import Session
 from app.migartions import engine
@@ -9,8 +9,8 @@ def index(request):
     context = {'title': 'Home', 'message': 'Welcome to my jinja project'}
     return render_template('index.html', context)
 
-# def css(request):
-#     return render_css('static/css/style.min.css')
+def css(request):
+    return render_css('static/css/style.min.css')
 
 def about(request):
     context = {'title': 'About', 'message': 'This is the About Page'}
@@ -56,7 +56,7 @@ def login(request):
                     
         # بررسی اعتبارسنجی کاربر
         # if User.get(username) == password:
-        #     session_id = create_session(username)  
+        #     session_id = create_session(username)
         #     request.send_response(302)
         #     request.send_header('Set-Cookie', f'session_id={session_id}; HttpOnly')
         #     request.send_header('Location', '/')
@@ -69,8 +69,6 @@ def login(request):
     # return render_template('login.html', {})
     elif request.command == 'GET':
         return render_template('login.html', {'title': 'Login'})
-
-
 
 
 def posts_view(request):
@@ -95,5 +93,3 @@ def posts_view(request):
             posts = session.query(Post).all()
             context={'posts':posts}
         return render_template('posts.html',context)
-
-  

@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from app.models import Base
+from .models import Base
 
 engine = create_engine("sqlite:///db.sqlite3", echo=True)
 if __name__=="__main__":
