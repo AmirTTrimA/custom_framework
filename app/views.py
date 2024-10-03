@@ -48,7 +48,9 @@ def register (request):
         return render_template('register.html',{})
 
 def posts_view(request):
-     # name hameye textbox ha new_post bashe...va ye halghe for lazeme too front ke sakhtare post ha ro dirost neshon bede
+     # name hameye textbox ha new_post bashe...va ye halghe for lazeme too front ke sakhtare post ha ro dorost neshon bede
+     #name post ha items
+     #ye message ham darim to safhe
      if request.command=='GET':
         #as sqlite3 ham estefade kardam
         connection = sqlite3.connect('db.sqlite3')
@@ -56,7 +58,7 @@ def posts_view(request):
         cursor.execute("SELECT * FROM Post")  
         data = cursor.fetchall()  
         connection.close()
-        return render_template('posts.html',{'items':data})
+        return render_template('posts.html',{'items':data,'message':'welcom!'})
      elif request.command=='POST':
          my_user_data=request.get_current_user()
          if my_user_data:
@@ -64,7 +66,6 @@ def posts_view(request):
             user_id_1=str(my_user_data).split(':')
             user_id_2=user_id_1[1].split('}')
             user_id=int(user_id_2[0])
-            print(user_id)
             connection = sqlite3.connect('db.sqlite3')
             cursor = connection.cursor()
             cursor.execute(f"SELECT username FROM User_account WHERE id = {user_id};")  
@@ -73,6 +74,13 @@ def posts_view(request):
             data = request.POST
             now=datetime.now()
             new_post=request.POST.get('new_post')
+            connection = sqlite3.connect('db.sqlite3')
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM Post")  
+            data = cursor.fetchall()  
+            connection.close()
+            if new_post is None:
+                return render_template('posts.html',{'items':data,'message':'welcom!'})
             with Session(engine) as session:
                 user = Post(
                     author=str(username[0]),
@@ -83,7 +91,7 @@ def posts_view(request):
                 session.commit()
                 return render_template(
                         "posts.html",
-                        {"message": "Your message has been saved successfully"})
+                        {'items':data,"message": "Your message has been saved successfully"})
          else:
              return render_template(
                         "posts.html",
@@ -107,7 +115,7 @@ def post_view(request):
             cursor.execute(f"SELECT * FROM Post WHERE author = '{my_username}';")  
             post_au = cursor.fetchall()  
             connection.close()
-            return render_template('post.html',{'items':post_au})
+            return render_template('post.html',{'items':post_au,'message':'welcom!'})
         else:
              return render_template(
                         "post.html",
@@ -115,19 +123,24 @@ def post_view(request):
     elif request.command=='POST':
          my_user_data=request.get_current_user()
          if my_user_data:
-            #  user_id=get_session(session_id)
             user_id_1=str(my_user_data).split(':')
             user_id_2=user_id_1[1].split('}')
             user_id=int(user_id_2[0])
-            print(user_id)
             connection = sqlite3.connect('db.sqlite3')
             cursor = connection.cursor()
             cursor.execute(f"SELECT username FROM User_account WHERE id = {user_id};")  
             username =cursor.fetchone()  
             connection.close()
+            connection = sqlite3.connect('db.sqlite3')
+            cursor = connection.cursor()
+            my_username=username[0]
+            cursor.execute(f"SELECT * FROM Post WHERE author = '{my_username}';")  
+            post_au = cursor.fetchall()
             data = request.POST
             now=datetime.now()
             new_post=data.get('new_post')
+            if new_post is None:
+                return render_template('post.html',{'items':post_au,'message':'welcom!'})
             with Session(engine) as session:
                 user = Post(
                     author=str(username[0]),
@@ -138,7 +151,7 @@ def post_view(request):
                 session.commit()
                 return render_template(
                         "post.html",
-                        {"message": "Your message has been saved successfully"})
+                        {'items':post_au,"message": "Your message has been saved successfully"})
          else:
              return render_template(
                         "post.html",
