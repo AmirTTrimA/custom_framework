@@ -35,3 +35,10 @@ class Session(Base):
     session_key:Mapped[str]=mapped_column(primary_key=True)
     session_value:Mapped[str]=mapped_column(String(1000))
     expire_date = column(DateTime)
+
+class Address(Base):
+    __tablename__ = 'addresses'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(200))
+    user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
+    user: Mapped["User"] = relationship(back_populates="addresses")

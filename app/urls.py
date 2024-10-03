@@ -1,6 +1,6 @@
 from app.views import (
     register,login,
-    index,about,posts_view,css,post)
+    index,about,posts_view,post)
 
 
 urlpatterns = [ 
@@ -8,7 +8,7 @@ urlpatterns = [
     {"path":"/login","views":login},
     {"path":"/","views":index},
     # {"path":"/about","views":about},
-    {"path":"/post","views":post},
-    {"path":"/posts","views":posts_view},
-    {"path":"/css","views":css}
+    {"path":"/post/<int:pk>","views":post},
+    {"path":"/posts","views":posts_view}
+    # {"path":"/css","views":css}
 ]
