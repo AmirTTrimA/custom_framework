@@ -15,17 +15,17 @@
       crossorigin="anonymous"
     />
 
-    <link rel="stylesheet" href="css/style.min.css" />
-    <title>Welcome To The Developer Connector</title>
+    <link rel="stylesheet" href="/css" />
+    <title>{{title}}</title>
   </head>
   <body>
     <nav class="navbar bg-dark">
       <h1>
-        <a href="index.html"><i class="fas fa-code"></i> DevConnector</a>
+        <a href="/"><i class="fas fa-code"></i> DevConnector</a>
       </h1>
       <ul>
         <li><a href="profiles.html">Developers</a></li>
-        <li><a href="posts.html">Posts</a></li>
+        <li><a href="posts">Posts</a></li>
         <li>
           <a href="dashboard.html" title="Dashboard"
             ><i class="fas fa-user"></i>
@@ -33,7 +33,7 @@
           >
         </li>
         <li>
-          <a href="login.html" title="Logout">
+          <a href="login" title="Logout">
             <i class="fas fa-sign-out-alt"></i>
             <span class="hide-sm">Logout</span></a
           >
@@ -41,7 +41,7 @@
       </ul>
     </nav>
     <section class="container">
-      <a href="posts.html" class="btn">Back To Posts</a>
+      <a href="posts" class="btn">Back To Posts</a>
       <div class="post bg-white p-1 my-1">
         <div>
           <a href="profile.html">
@@ -74,7 +74,7 @@
             rows="5"
             placeholder="Comment on this post"
           ></textarea>
-          <input type="submit" class="btn btn-dark my-1" value="Submit" />
+          <input type="submit" class="btn btn-dark my-1" value="Submit" required/>
         </form>
       </div>
 

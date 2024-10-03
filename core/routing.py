@@ -3,6 +3,6 @@ def resolve(path):
 
     for pattern in urlpatterns:
         if pattern['path'] == path:
-            return pattern['view'], pattern.get('kwargs', {})
+            return pattern['views'], pattern.get('kwargs', {})
 
     return None, None
