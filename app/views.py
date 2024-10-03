@@ -2,8 +2,12 @@ from core.http import render_template, render_css
 
 from sqlalchemy.orm import Session
 from app.migartions import engine
-from app.models import User,Post
+from app.models import User,Post, engine
 from sqlalchemy import select
+
+from sqlalchemy.orm import sessionmaker
+
+Session = sessionmaker(bind=engine)
 
 def index(request):
     context = {'title': 'Home', 'message': 'Welcome to my jinja project'}
@@ -45,51 +49,46 @@ def register(request):
 def login(request):
     if request.command == 'POST':
         data = request.POST
-        username =  data.get('username')
+        username = data.get('username')
         password = data.get('password')
-        if username is not None and password is not None:
-            with Session(engine) as session:
-                query = select(User).where(User.username==username,User.password==password)
-                user = session.scalar(query)
-                if user:
-                    print(user.username)
-                    
-        # بررسی اعتبارسنجی کاربر
-        # if User.get(username) == password:
-        #     session_id = create_session(username)
-        #     request.send_response(302)
-        #     request.send_header('Set-Cookie', f'session_id={session_id}; HttpOnly')
-        #     request.send_header('Location', '/')
-        #     request.end_headers()
-        #     return ""
-        # else:
-        #     # نمایش پیام خطا
-        #     return render_template('login.html', {'error': 'Incorrect username or password'})
-    # نمایش فرم لاگین
-    # return render_template('login.html', {})
-    elif request.command == 'GET':
-        return render_template('login.html', {'title': 'Login'})
+
+        if username and password:
+            session = Session()
+            query = select(User).where(User.username == username)
+            user = session.scalar(query)
+            # with Session(engine) as session:
+            #     # Fetch the user based on username
+            #     query = select(User).where(User.username == username)
+            #     user = session.scalar(query)
+
+                # Check if user exists and password matches
+            if user and user.password == password:
+                print(f"User {user.username} logged in successfully.")
+                # Here you might want to set a session or a cookie
+                # For example: request.session['user_id'] = user.id
+                # Redirect to index or posts page
+                request.send_response(302)
+                request.send_header('Location', '/posts')
+                request.end_headers()
+                return ""
+
+            else:
+                # Invalid credentials
+                return render_template('login.html', {'title': 'Login', 'error': 'Invalid username or password.'})
+
+    # Display the login form
+    return render_template('login.html', {'title': 'Login'})
 
 
 def posts_view(request):
-    context = {}
-    if request.command=="POST":
-        data = request.POST
-        with Session(engine) as session:
-            post = Post(
-                body= data['body'],
-                user_id= request.user.id,
-                user= request.user,
-            )
-            session.add(post)
-            session.commit()
-            print(post.id)
-        return render_template('posts.html',context)
+    session = Session()
+    posts = session.query(Post).all()
+    return render_template('posts.html', {'posts': posts})
 
-
-    elif request.command=="GET":
-        context={}
-        with Session() as session:
+    with Session() as session:
+        try:
             posts = session.query(Post).all()
-            context={'posts':posts}
-        return render_template('posts.html',context)
+            return render_template('posts.html', {'posts': posts})
+        except Exception as e:
+            print(f"Error fetching posts: {e}")
+            return render_template('error.html', {'error': 'Could not fetch posts.'})

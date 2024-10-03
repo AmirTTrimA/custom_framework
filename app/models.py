@@ -51,27 +51,27 @@ from sqlalchemy.orm import sessionmaker
 
 SessionLocal = sessionmaker(bind=engine)
 
-def add_post(user_id: int, body: str):
-    # Create a new session
-    session = SessionLocal()
-    try:
-        # Create a new Post instance
-        new_post = Post(body=body, user_id=user_id)
+# def add_post(user_id: int, body: str):
+#     # Create a new session
+#     session = SessionLocal()
+#     try:
+#         # Create a new Post instance
+#         new_post = Post(body=body, user_id=user_id)
         
-        # Add the post to the session
-        session.add(new_post)
+#         # Add the post to the session
+#         session.add(new_post)
         
-        # Commit the session to save the post
-        session.commit()
+#         # Commit the session to save the post
+#         session.commit()
         
-        print(f"Post added: {new_post}")
-    except Exception as e:
-        # Rollback the session in case of error
-        session.rollback()
-        print(f"Error occurred: {e}")
-    finally:
-        # Close the session
-        session.close()
+#         print(f"Post added: {new_post}")
+#     except Exception as e:
+#         # Rollback the session in case of error
+#         session.rollback()
+#         print(f"Error occurred: {e}")
+#     finally:
+#         # Close the session
+#         session.close()
 
-# Example usage
-add_post(user_id=1, body="This is a new post!")
+# # Example usage
+# add_post(user_id=1, body="This is a new post!")
