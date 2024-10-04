@@ -41,9 +41,7 @@
       </ul>
     </nav>
     <section class="container">
-      <h1 class="large text-primary">
-        Posts
-      </h1>
+      <h1 class="large text-primary">Posts</h1>
       <p class="lead"><i class="fas fa-user"></i> Welcome to the community</p>
 
       <div class="post-form">
@@ -51,8 +49,18 @@
           <h3>Say Something...</h3>
         </div>
         <form class="form my-1" method="post">
-          <textarea name="new_post" cols="30" rows="5" placeholder="Create a post"></textarea>
-          <input type="submit" value="Submit" class="btn btn-dark my-1" required/>
+          <textarea
+            name="new_post"
+            cols="30"
+            rows="5"
+            placeholder="Create a post"
+          ></textarea>
+          <input
+            type="submit"
+            value="Submit"
+            class="btn btn-dark my-1"
+            required
+          />
         </form>
         <div class="posts">
           {% for post in posts %}
@@ -69,18 +77,16 @@
             </div>
 
             <div>
-              <p class="my-1">
-                {{post.body}}
-              </p>
+              <p class="my-1">{{post.body}}</p>
               <button class="btn">
                 <i class="fas fa-thumbs-up"></i> <span>4</span>
               </button>
               <button class="btn">
                 <i class="fas fa-thumbs-down"></i>
               </button>
-              <a href="post" class="btn btn-primary">
-                Discussion
-              </a>
+              <a href="/post/{{ post.id }}" class="btn btn-primary"
+                >Discussion</a
+              >
             </div>
           </div>
           {% endfor %}

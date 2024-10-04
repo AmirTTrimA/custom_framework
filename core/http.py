@@ -72,7 +72,7 @@ def run_server(urlpatterns):
         httpd.serve_forever()
 
 def render_template(template_name, context):
-    template_dir = os.path.join(os.getcwd(), 'app', 'templates')
+    template_dir = os.path.join(os.getcwd(),'app', 'templates')
     env = Environment(loader=FileSystemLoader(template_dir))
     template = env.get_template(template_name)
     return template.render(context)
