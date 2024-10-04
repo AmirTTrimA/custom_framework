@@ -50,7 +50,7 @@
         <div class="post-form-header bg-primary">
           <h3>Say Something...</h3>
         </div>
-        <form class="form my-1" method="post" action="/custom_framework/app/templates/posts.html">
+        <form class="form my-1" method="post">
           <textarea name="new_post" cols="30" rows="5" placeholder="Create a post"></textarea>
           <input type="submit" value="Submit" class="btn btn-dark my-1" required/>
         </form>
@@ -58,18 +58,20 @@
           {% for post in posts %}
           <div class="post bg-white my-1 p-1">
             <div>
-              <a href="#">
+              <a href="post">
                 <img
                   class="round-img"
                   src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200"
                   alt=""
                 />
-                <h4>{{post.user_id.username}}</h4>
+                <h4>{{post.user_name}}</h4>
               </a>
             </div>
 
             <div>
-              <p class="my-1">{{post.body}}</p>
+              <p class="my-1">
+                {{post.body}}
+              </p>
               <button class="btn">
                 <i class="fas fa-thumbs-up"></i> <span>4</span>
               </button>
@@ -82,7 +84,6 @@
             </div>
           </div>
           {% endfor %}
-
           <!-- <div class="post bg-white my-1 p-1">
             <div>
               <a href="profile.html">
@@ -112,7 +113,8 @@
                 Discussion
               </a>
             </div>
-          </div> -->
+          </div>
+           -->
         </div>
       </div>
     </section>

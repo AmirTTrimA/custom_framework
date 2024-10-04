@@ -1,13 +1,10 @@
-from core.http import render_template, render_css
+from core.http import render_template, render_css, MyHandler
 
 from sqlalchemy.orm import Session
 from app.migartions import engine
-from app.models import User,Post, engine
+from app.models import User, Post
 from sqlalchemy import select
-
-from sqlalchemy.orm import sessionmaker
-
-Session = sessionmaker(bind=engine)
+from session.session import creat_session
 
 def index(request):
     context = {'title': 'Home', 'message': 'Welcome to my jinja project'}
@@ -19,12 +16,8 @@ def css(request):
 def about(request):
     context = {'title': 'About', 'message': 'This is the About Page'}
     return render_template('about.html', context)
-
-def post(request,post_id):
-    with Session(engine) as session:
-        query = select(Post).where(Post.id==post_id)
-        post = session.scalar(query)
-    context = {'title': 'Post', 'post': post}
+def post(request):
+    context = {'title': 'Post', 'message': '????'}
     return render_template('post.html', context)
 
 def register(request):
@@ -38,7 +31,6 @@ def register(request):
             )
             session.add(user)
             session.commit()
-            print(user.id)
         return render_template('register.html',{'message':f'user {data["username"]} is registered successfully!', 'title':'Registered'})
              
     elif request.command=="GET":
@@ -51,44 +43,46 @@ def login(request):
         data = request.POST
         username = data.get('username')
         password = data.get('password')
+        if username is not None and password is not None:
+            with Session(engine) as session:
+                query = select(User).where(User.username==username,User.password==password)
+                user = session.scalar(query)
+                if user == None:
+                    return render_template('login.html', {'title': 'Login','message':'<div class="alert alert-danger">Invalid Credentials</div>'})
+                else:
+                    session_id = creat_session(user.id)  
+                    request.send_response(302)
+                    request.send_header('Set-Cookie', f'session_id={session_id}; HttpOnly')
+                    request.send_header('Location', '/posts')
+                    request.end_headers()
+                    # return render_template('login.html', {'title': 'Login','message':'<div class="alert alert-success">Logged in successfully!</div>'})
+    elif request.command == 'GET':
+        return render_template('login.html', {'title': 'Login'})
 
-        if username and password:
-            session = Session()
-            query = select(User).where(User.username == username)
-            user = session.scalar(query)
-            # with Session(engine) as session:
-            #     # Fetch the user based on username
-            #     query = select(User).where(User.username == username)
-            #     user = session.scalar(query)
 
-                # Check if user exists and password matches
-            if user and user.password == password:
-                print(f"User {user.username} logged in successfully.")
-                # Here you might want to set a session or a cookie
-                # For example: request.session['user_id'] = user.id
-                # Redirect to index or posts page
-                request.send_response(302)
-                request.send_header('Location', '/posts')
-                request.end_headers()
-                return ""
-
-            else:
-                # Invalid credentials
-                return render_template('login.html', {'title': 'Login', 'error': 'Invalid username or password.'})
-
-    # Display the login form
-    return render_template('login.html', {'title': 'Login'})
 
 
 def posts_view(request):
-    session = Session()
-    posts = session.query(Post).all()
-    return render_template('posts.html', {'posts': posts})
+    context = []
+    if request.command=="POST":
+        
+        with Session(engine) as session:
+            query = select(User).where(User.id==request.get_current_user())
+            user = session.scalar(query)
+            new_post = Post (
+                body = request.POST.get('new_post'),
+                user_id = request.get_current_user(),
+                user_name = user.username
+            )
+            session.add(new_post)
+            session.commit()
+            context = session.query(Post).all()
+            return render_template('posts.html',{'posts' : context})
 
-    with Session() as session:
-        try:
-            posts = session.query(Post).all()
-            return render_template('posts.html', {'posts': posts})
-        except Exception as e:
-            print(f"Error fetching posts: {e}")
-            return render_template('error.html', {'error': 'Could not fetch posts.'})
+
+    elif request.command=="GET":
+        with Session(engine) as session:
+                context = session.query(Post).all()
+                return render_template('posts.html', {'posts' : context})
+
+  

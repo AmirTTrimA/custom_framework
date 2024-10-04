@@ -20,7 +20,7 @@ def creat_session(user_id):
     with Session(engine) as session:
         
         session_model = SessionModel(
-            session_id=session_id,
+            session_key=session_id,
             session_value=session_value,
             expire_date=datetime.now()+timedelta(days=2))
     
@@ -32,13 +32,13 @@ def get_session(session_id):
     with Session(engine) as session:
 
         query = select(SessionModel).where(
-            SessionModel.session_id == session_id)
+            SessionModel.session_key == session_id)
         session_model = session.scalar(query)
         if session_model is None:
             return None
         elif session_model.expire_date < datetime.now():
             return None
-    return json.loads(session_model,session_value)
+    return session_model
 
 def destroy_session(session_id):
     if session_id in Session:
